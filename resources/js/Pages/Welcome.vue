@@ -49,14 +49,14 @@ function sendMessage() {
 </script>
 
 <template>
-    <div class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex flex-col">
+    <div class="bg-gray-50 dark:bg-white text-gray-800 dark:text-gray-200 min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="bg-gray-900 text-white py-4 px-6 shadow-md fixed top-0 w-full z-10">
+        <header class="bg-white text-white px-6 shadow-md fixed top-0 w-full z-10">
             <div class="container mx-auto flex justify-between items-center">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
-                    <img src="/assets/logo.jpeg" class="w-16 h-16 rounded-full object-cover" alt="Logo" onerror="this.onerror=null; this.src='/fallback-logo.png';">
-                    <span class="text-lg font-semibold">Suri Support</span>
+                    <img src="/assets/logo-wbg.png" class="w-24 h-24 object-cover" alt="Logo" onerror="this.onerror=null; this.src='/fallback-logo.png';">
+                    <span class="text-lg font-semibold text-black">Suri Support</span>
                 </div>
 
                 <!-- Navigation -->
@@ -71,7 +71,7 @@ function sendMessage() {
                     <template v-else>
                         <Link
                             :href="route('login')"
-                            class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition text-white"
+                            class="px-4 py-2 rounded-md hover:bg-gray-200 transition text-black"
                         >
                             Iniciar sesión
                         </Link>
@@ -88,8 +88,8 @@ function sendMessage() {
         </header>
 
         <!-- Chat -->
-        <main class="flex-grow flex items-center justify-center mt-20">
-            <div class="chat-container bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-5xl h-[550px] flex flex-col border border-gray-300 dark:border-gray-700">
+        <main class="flex-grow flex items-center justify-center mt-28">
+            <div class="chat-container bg-white dark:bg-gray-100 p-6 rounded-lg shadow-lg w-full max-w-5xl h-[550px] flex flex-col border border-gray-300 dark:border-gray-700">
                 <!-- Chat Messages -->
                 <div class="chat-messages flex-grow overflow-y-auto space-y-4 p-4">
                     <div
@@ -104,7 +104,7 @@ function sendMessage() {
                         <span
                             :class="{
                                 'bg-gray-300 text-black rounded-lg px-4 py-2 inline-block': message.sender === 'bot',
-                                'bg-blue-500 text-white rounded-lg px-4 py-2 inline-block': message.sender === 'user',
+                                'bg-gray-700 text-white rounded-lg px-4 py-2 inline-block': message.sender === 'user',
                             }"
                         >
                             {{ message.text }}
@@ -113,17 +113,17 @@ function sendMessage() {
                 </div>
 
                 <!-- Chat Input -->
-                <div class="chat-input flex items-center p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <div class="chat-input flex items-center p-3 bg-gray-100 rounded-lg">
                     <input
                         v-model="currentMessage"
                         @keyup.enter="sendMessage"
                         type="text"
                         placeholder="Escribe tu mensaje..."
-                        class="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                        class="flex-1 p-3 border border-gray-300 dark:border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-200 dark:text-black"
                     />
                     <button
                         @click="sendMessage"
-                        class="ml-3 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center"
+                        class="ml-3 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center"
                     >
                         <span class="mr-2">Enviar</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -135,8 +135,8 @@ function sendMessage() {
         </main>
 
         <!-- Footer -->
-        <footer class="py-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            Suri Support - Todos los derechos reservados
+        <footer class="py-6 text-center text-sm text-gray-900 dark:text-gray-600">
+            Suri Support 2025 - Todos los derechos reservados
         </footer>
     </div>
 </template>
