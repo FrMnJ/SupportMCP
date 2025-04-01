@@ -22,6 +22,7 @@ const priorityColors = {
 </script>
 
 <template>
+
     <Head title="Detalle del Ticket - {{ ticket.id }}" />
 
     <AuthenticatedLayout>
@@ -40,7 +41,9 @@ const priorityColors = {
                             <h3 class="text-lg font-semibold text-gray-700">Detalles del Ticket</h3>
                             <p class="text-sm text-gray-500">Información detallada sobre el ticket seleccionado.</p>
                         </div>
-                        <Link :href="route('tickets.index')" class="text-blue-600 hover:text-blue-800 transition">Volver a la lista</Link>
+                        <Link :href="route('tickets.index')" class="text-blue-600 hover:text-blue-800 transition">Volver
+                        a la
+                        lista</Link>
                     </div>
 
                     <div class="space-y-4">
@@ -65,7 +68,8 @@ const priorityColors = {
                         <!-- Estado -->
                         <div class="flex items-center space-x-4">
                             <span class="font-semibold text-gray-700 w-1/4">Estado:</span>
-                            <span :class="`px-2 py-1 text-white text-xs font-semibold rounded ${statusColors[ticket.status]}`">
+                            <span
+                                :class="`px-2 py-1 text-white text-xs font-semibold rounded ${statusColors[ticket.status]}`">
                                 {{ ticket.status }}
                             </span>
                         </div>
@@ -73,7 +77,8 @@ const priorityColors = {
                         <!-- Prioridad -->
                         <div class="flex items-center space-x-4">
                             <span class="font-semibold text-gray-700 w-1/4">Prioridad:</span>
-                            <span :class="`px-2 py-1 text-white text-xs font-semibold rounded ${priorityColors[ticket.priority]}`">
+                            <span
+                                :class="`px-2 py-1 text-white text-xs font-semibold rounded ${priorityColors[ticket.priority]}`">
                                 {{ ticket.priority }}
                             </span>
                         </div>
@@ -95,10 +100,22 @@ const priorityColors = {
                             <span class="font-semibold text-gray-700">Descripción:</span>
                             <p class="text-gray-600">{{ ticket.description }}</p>
                         </div>
+
+                        <!-- Resolución -->
+                        <div class="space-y-2">
+                            <span class="font-semibold text-gray-700">Resolución:</span>
+                            <p class="text-gray-600">{{ ticket.resolution || "Sin resolución por el momento." }}</p>
+                        </div>
+
+                        <!-- Comentarios -->
+                        <div class="space-y-2">
+                            <span class="font-semibold text-gray-700">Comentarios:</span>
+                            <p class="text-gray-600">{{ ticket.comments }}</p>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
-
