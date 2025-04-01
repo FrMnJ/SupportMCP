@@ -58,7 +58,12 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket)
     {
-        return Inertia::render('EditTicket', ['ticket' => $ticket]);
+        return Inertia::render('Tickets/Edit', [
+            'ticket' => $ticket->load(['client', 'assignedTo', 'system']),
+            'clients' => User::role('client')->get(),
+            'systems' => System::all(),
+            'users' => User::whereDoesntHave('roles', fn($query) => $query->where('name', 'client'))->get(),
+        ]);
     }
 
     public function update(Request $request, Ticket $ticket)
