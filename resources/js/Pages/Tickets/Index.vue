@@ -1,7 +1,9 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import Modal from "@/Components/Modal.vue";
+import { useForm } from "@inertiajs/vue3";
 
 const { tickets } = usePage().props;
 
@@ -17,6 +19,34 @@ const priorityColors = {
     low: "bg-green-400",
     medium: "bg-yellow-400",
     high: "bg-red-500",
+};
+
+const showModal = ref(false);
+const ticketToDelete = ref(null);
+const form = useForm({});
+
+const openModal = (ticket) => {
+    ticketToDelete.value = ticket;
+    showModal.value = true;
+};
+
+const closeModal = () => {
+    showModal.value = false;
+    ticketToDelete.value = null;
+};
+
+const deleteTicket = () => {
+    if (ticketToDelete.value) {
+        form.delete(route('tickets.destroy', ticketToDelete.value.id), {
+            onSuccess: () => { 
+                const index = tickets.findIndex(ticket => ticket.id === ticketToDelete.value.id);
+                if (index !== -1) {
+                    tickets.splice(index, 1); 
+                }
+                closeModal();
+            }
+        });
+    }
 };
 </script>
 
@@ -86,10 +116,10 @@ const priorityColors = {
                                             class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm">
                                         Editar
                                         </Link>
-                                        <Link :href="route('tickets.destroy', ticket.id)" method="delete"
+                                        <button @click="openModal(ticket)"
                                             class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm">
-                                        Eliminar
-                                        </Link>
+                                            Eliminar
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -98,5 +128,20 @@ const priorityColors = {
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Confirmación -->
+        <Modal :show="showModal" maxWidth="md" @close="closeModal">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold">Eliminar Ticket</h2>
+                <p>¿Estás seguro de que quieres eliminar este ticket?</p>
+
+                <div class="mt-4 flex justify-end">
+                    <button @click="closeModal" class="px-4 py-2 bg-gray-300 rounded mr-2">Cancelar</button>
+                    <button @click="deleteTicket" class="px-4 py-2 bg-red-600 text-white rounded">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
