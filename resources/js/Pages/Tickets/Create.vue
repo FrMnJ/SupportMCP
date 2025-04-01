@@ -12,6 +12,8 @@ const form = useForm({
     status: "",
     priority: "",
     category: "",
+    resolution: "",
+    comments: "",
 });
 
 const props = defineProps({
@@ -70,6 +72,7 @@ const submit = () => {
 </script>
 
 <template>
+
     <Head title="Crear Ticket" />
     <AuthenticatedLayout>
         <template #header>
@@ -98,7 +101,8 @@ const submit = () => {
                         <label class="block text-sm font-medium text-gray-700">Sistema</label>
                         <select v-model="form.system_id" class="w-full p-2 border rounded">
                             <option value="">Selecciona un sistema</option>
-                            <option v-for="system in systems" :key="system.id" :value="system.id">{{ system.name }}</option>
+                            <option v-for="system in systems" :key="system.id" :value="system.id">{{ system.name }}
+                            </option>
                         </select>
                         <p v-if="errors.system_id" class="text-red-500 text-sm mt-1">{{ errors.system_id }}</p>
                     </div>
@@ -121,7 +125,8 @@ const submit = () => {
                         <label class="block text-sm font-medium text-gray-700">Cliente</label>
                         <select v-model="form.client_id" class="w-full p-2 border rounded">
                             <option value="">Selecciona un cliente</option>
-                            <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}</option>
+                            <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}
+                            </option>
                         </select>
                         <p v-if="errors.client_id" class="text-red-500 text-sm mt-1">{{ errors.client_id }}</p>
                     </div>
@@ -132,9 +137,8 @@ const submit = () => {
                         <select v-model="form.status" class="w-full p-2 border rounded">
                             <option value="">Selecciona un estado</option>
                             <option value="open">Abierto</option>
+                            <option value="in_progress">En Progreso</option>
                             <option value="pending">Pendiente</option>
-                            <option value="resolved">Resuelto</option>
-                            <option value="closed">Cerrado</option>
                         </select>
                         <p v-if="errors.status" class="text-red-500 text-sm mt-1">{{ errors.status }}</p>
                     </div>
@@ -160,9 +164,24 @@ const submit = () => {
                         </select>
                     </div>
 
+                    <!-- Resolución -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Resolución</label>
+                        <textarea v-model="form.resolution" class="w-full p-2 border rounded"></textarea>
+                        <p v-if="errors.resolution" class="text-red-500 text-sm mt-1">{{ errors.resolution }}</p>
+                    </div>
+
+                    <!-- Comentarios -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Comentarios</label>
+                        <textarea v-model="form.comments" class="w-full p-2 border rounded"></textarea>
+                        <p v-if="errors.comments" class="text-red-500 text-sm mt-1">{{ errors.comments }}</p>
+                    </div>
+
                     <!-- Botón de envío -->
                     <div class="flex justify-end">
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                             Crear Ticket
                         </button>
                     </div>

@@ -13,13 +13,15 @@ const form = useForm({
     status: "",
     priority: "",
     category: "",
+    resolution: "",
+    comments: "",
 });
 
 const props = defineProps({
     systems: Array,
     clients: Array,
     users: Array,
-    ticket: Object, 
+    ticket: Object,
 });
 
 // Estado para errores de validación
@@ -71,6 +73,13 @@ const validateForm = () => {
         errors.value.priority = "Debes seleccionar una prioridad.";
     }
 
+    if (!form.resolution) {
+        errors.value.resolution = "Debes agregar una resolución."
+    }
+
+    if (!form.comments) {
+        errors.value.comments = "Debes agregar comentarios."
+    }
 
     // Retorna `true` si no hay errores
     return Object.keys(errors.value).length === 0;
@@ -97,10 +106,13 @@ onMounted(() => {
     form.status = props.ticket.status;
     form.priority = props.ticket.priority;
     form.category = props.ticket.category;
+    form.resolution = props.ticket.resolution;
+    form.comments = props.ticket.comments;
 });
 </script>
 
 <template>
+
     <Head title="Editar Ticket" />
     <AuthenticatedLayout>
         <template #header>
@@ -113,23 +125,27 @@ onMounted(() => {
                     <!-- Asunto -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Asunto</label>
-                        <input v-model="form.issue" type="text" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        <input v-model="form.issue" type="text"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         <p v-if="errors.issue" class="text-red-500 text-sm mt-1">{{ errors.issue }}</p>
                     </div>
 
                     <!-- Descripción -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Descripción</label>
-                        <textarea v-model="form.description" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <textarea v-model="form.description"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                         <p v-if="errors.description" class="text-red-500 text-sm mt-1">{{ errors.description }}</p>
                     </div>
 
                     <!-- Sistema -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Sistema</label>
-                        <select v-model="form.system_id" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select v-model="form.system_id"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Selecciona un sistema</option>
-                            <option v-for="system in systems" :key="system.id" :value="system.id">{{ system.name }}</option>
+                            <option v-for="system in systems" :key="system.id" :value="system.id">{{ system.name }}
+                            </option>
                         </select>
                         <p v-if="errors.system_id" class="text-red-500 text-sm mt-1">{{ errors.system_id }}</p>
                     </div>
@@ -137,7 +153,8 @@ onMounted(() => {
                     <!-- Categoría -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Categoría</label>
-                        <select v-model="form.category" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select v-model="form.category"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Selecciona una categoría</option>
                             <option value="bug">Error</option>
                             <option value="feature_request">Funcionalidad</option>
@@ -150,9 +167,11 @@ onMounted(() => {
                     <!-- Cliente -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Cliente</label>
-                        <select v-model="form.client_id" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select v-model="form.client_id"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Selecciona un cliente</option>
-                            <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}</option>
+                            <option v-for="client in clients" :key="client.id" :value="client.id">{{ client.name }}
+                            </option>
                         </select>
                         <p v-if="errors.client_id" class="text-red-500 text-sm mt-1">{{ errors.client_id }}</p>
                     </div>
@@ -160,7 +179,8 @@ onMounted(() => {
                     <!-- Estado -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Estado</label>
-                        <select v-model="form.status" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select v-model="form.status"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Selecciona un estado</option>
                             <option value="open" :class="statusColors.open">Abierto</option>
                             <option value="in_progress" :class="statusColors.in_progress">En Progreso</option>
@@ -174,7 +194,8 @@ onMounted(() => {
                     <!-- Prioridad -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Prioridad</label>
-                        <select v-model="form.priority" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select v-model="form.priority"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Selecciona una prioridad</option>
                             <option value="low" :class="priorityColors.low">Baja</option>
                             <option value="medium" :class="priorityColors.medium">Media</option>
@@ -186,15 +207,32 @@ onMounted(() => {
                     <!-- Asignado a -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Asignado a</label>
-                        <select v-model="form.assigned_to" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select v-model="form.assigned_to"
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">No asignar</option>
                             <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
                         </select>
                     </div>
 
+                    <!-- Resolución -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Resolución</label>
+                        <textarea v-model="form.resolution" class="w-full p-2 border rounded"></textarea>
+                        <p v-if="errors.resolution" class="text-red-500 text-sm mt-1">{{ errors.resolution }}</p>
+                    </div>
+
+                    <!-- Comentarios -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Comentarios</label>
+                        <textarea v-model="form.comments" class="w-full p-2 border rounded"></textarea>
+                        <p v-if="errors.comments" class="text-red-500 text-sm mt-1">{{ errors.comments }}</p>
+                    </div>
+
+
                     <!-- Botón de envío -->
                     <div class="flex justify-end">
-                        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <button type="submit"
+                            class="px-6 py-3 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                             Guardar Cambios
                         </button>
                     </div>
