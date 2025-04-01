@@ -19,7 +19,7 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
-        return Inertia::render('TicketDetail', ['ticket' => $ticket->load(['client', 'assignedTo'])]);
+        return Inertia::render('Tickets/Show', ['ticket' => $ticket->load(['client', 'assignedTo', 'system'])]);
     }
 
     public function create()
