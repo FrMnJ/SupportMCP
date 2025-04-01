@@ -6,7 +6,7 @@ import { computed } from "vue";
 const { tickets } = usePage().props;
 
 const statusColors = {
-    open: "bg-purple-500",
+    open: "bg-red-500",
     in_progress: "bg-yellow-500",
     resolved: "bg-green-500",
     closed: "bg-gray-500",
@@ -14,9 +14,9 @@ const statusColors = {
 };
 
 const priorityColors = {
-    low: "bg-green-300",
-    medium: "bg-yellow-300",
-    high: "bg-red-300",
+    low: "bg-green-400",
+    medium: "bg-yellow-400",
+    high: "bg-red-400",
 };
 </script>
 
