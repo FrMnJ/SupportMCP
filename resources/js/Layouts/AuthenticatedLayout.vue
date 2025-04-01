@@ -17,14 +17,17 @@ const showingNavigationDropdown = ref(false);
                 class="border-b border-gray-100 bg-white"
             >
                 <!-- Primary Navigation Menu -->
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 justify-between">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
                                 <Link :href="route('tickets.index')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
+                                    <img 
+                                        src="/assets/logo-wbg.png"
+                                        class="h-24 w-24 object-cover"
+                                        alt="Logo"
+                                        onerror="this.onerror=null; this.src='/fallback-logo.png';"
                                     />
                                 </Link>
                             </div>
@@ -36,6 +39,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink
                                     :href="route('tickets.index')"
                                     :active="route().current('tickets')"
+                                    
                                 >
                                     Tickets
                                 </NavLink>

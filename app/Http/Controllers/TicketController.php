@@ -6,6 +6,8 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
+use App\Models\System;
+use Carbon\Carbon;
 
 class TicketController extends Controller
 {
@@ -17,12 +19,16 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
-        return Inertia::render('TicketDetail', ['ticket' => $ticket->load(['client', 'assignedTo'])]);
+        return Inertia::render('Tickets/Show', ['ticket' => $ticket->load(['client', 'assignedTo', 'system'])]);
     }
 
     public function create()
     {
-        return Inertia::render('CreateTicket');
+        return Inertia::render('Tickets/Create', [
+            'clients' => User::role('client')->get(),
+            'systems' => System::all(),
+            'users' => User::whereDoesntHave('roles', fn($query) => $query->where('name', 'client'))->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -33,7 +39,17 @@ class TicketController extends Controller
             'priority' => 'required|in:low,medium,high',
             'category' => 'required|in:bug,feature_request,question,other',
             'client_id' => 'required|exists:users,id',
+            'system_id' => 'required|exists:systems,id',
+            'assigned_to' => 'nullable|exists:users,id',
+            'status' => 'required|in:open,in_progress,resolved,closed,pending',
+
         ]);
+
+        $ticketData = $request->all();
+
+        if ($request->filled('assigned_to')) {
+            $ticketData['assigned_at'] = Carbon::now();
+        }
 
         Ticket::create($request->all());
 
@@ -42,7 +58,12 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket)
     {
-        return Inertia::render('EditTicket', ['ticket' => $ticket]);
+        return Inertia::render('Tickets/Edit', [
+            'ticket' => $ticket->load(['client', 'assignedTo', 'system']),
+            'clients' => User::role('client')->get(),
+            'systems' => System::all(),
+            'users' => User::whereDoesntHave('roles', fn($query) => $query->where('name', 'client'))->get(),
+        ]);
     }
 
     public function update(Request $request, Ticket $ticket)
