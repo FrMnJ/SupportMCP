@@ -3,19 +3,16 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
 
-// Obtener los tickets desde Inertia.js
 const { tickets } = usePage().props;
 
-// Colores para el estado del ticket
 const statusColors = {
-    open: "bg-red-500",
+    open: "bg-purple-500",
     in_progress: "bg-yellow-500",
     resolved: "bg-green-500",
     closed: "bg-gray-500",
     pending: "bg-blue-500",
 };
 
-// Colores para la prioridad
 const priorityColors = {
     low: "bg-green-300",
     medium: "bg-yellow-300",

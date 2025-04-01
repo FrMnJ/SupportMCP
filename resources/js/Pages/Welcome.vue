@@ -62,9 +62,12 @@ function sendMessage() {
 
                 <!-- Navigation -->
                 <div class="flex space-x-4">
-                    <Link v-if="$page.props.auth.user" :href="route('dashboard')"
-                        class="text-white hover:text-gray-300 transition">
-                    Dashboard
+                    <Link
+                        v-if="$page.props.auth.user"
+                        :href="route('tickets.index')"
+                        class="text-white hover:text-gray-300 transition"
+                    >
+                        Tickets
                     </Link>
                     <template v-else>
                         <Link :href="route('login')"
