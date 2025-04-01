@@ -11,8 +11,8 @@ class TicketController extends Controller
 {
     public function index()
     {
-        $tickets = Ticket::with(['client', 'assignedTo'])->get();
-        return Inertia::render('Tickets', ['tickets' => $tickets]);
+        $tickets = Ticket::with(['client', 'assignedTo', 'system'])->get();
+        return Inertia::render('Tickets/Index', ['tickets' => $tickets]);
     }
 
     public function show(Ticket $ticket)
