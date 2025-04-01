@@ -27,7 +27,7 @@ class TicketController extends Controller
         return Inertia::render('Tickets/Create', [
             'clients' => User::role('client')->get(),
             'systems' => System::all(),
-            'users' => User::whereDoesntHave('roles', fn($query) => $query->where('name', 'client'))->get(),
+            'users' => User::withoutRole(['client', 'agent'])->get(),
         ]);
     }
 
@@ -42,7 +42,9 @@ class TicketController extends Controller
             'system_id' => 'required|exists:systems,id',
             'assigned_to' => 'nullable|exists:users,id',
             'status' => 'required|in:open,in_progress,resolved,closed,pending',
-
+            'resolution' => 'nullable|string',
+            'comments' => 'nullable|string',
+            'score' => 'nullable|integer',
         ]);
 
         $ticketData = $request->all();
@@ -62,7 +64,7 @@ class TicketController extends Controller
             'ticket' => $ticket->load(['client', 'assignedTo', 'system']),
             'clients' => User::role('client')->get(),
             'systems' => System::all(),
-            'users' => User::whereDoesntHave('roles', fn($query) => $query->where('name', 'client'))->get(),
+            'users' => User::withoutRole(['client', 'agent'])->get(),
         ]);
     }
 
