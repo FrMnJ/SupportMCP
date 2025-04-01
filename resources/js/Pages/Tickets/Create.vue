@@ -9,9 +9,9 @@ const form = useForm({
     system_id: "",
     client_id: "",
     assigned_to: "",
-    status: "open",
-    priority: "medium",
-    category: "other",
+    status: "",
+    priority: "",
+    category: "",
 });
 
 const props = defineProps({
