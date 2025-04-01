@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'number' => '123456789',
             'extension' => '123',
             'department' => 'Dev',
-            'password' => bcrypt('password'), 
+            'password' => bcrypt('password'),
         ]);
 
         $adminUser->assignRole('admin');
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             'number' => '987654321',
             'extension' => '456',
             'department' => 'Dev',
-            'password' => bcrypt('password'), 
+            'password' => bcrypt('password'),
         ]);
         $developerUser->assignRole('developer');
 
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
             'number' => '456789123',
             'extension' => '789',
             'department' => 'Support',
-            'password' => bcrypt('password'), 
+            'password' => bcrypt('password'),
         ]);
 
         $supportUser->assignRole('support');
@@ -51,7 +51,7 @@ class UserSeeder extends Seeder
             'number' => '321654987',
             'extension' => '321',
             'department' => 'Client',
-            'password' => bcrypt('password'), 
+            'password' => bcrypt('password'),
         ]);
 
         $clientUser->assignRole('client');
@@ -62,11 +62,10 @@ class UserSeeder extends Seeder
             'number' => '390298340',
             'extension' => '321',
             'department' => 'Dev',
-            'password' => bcrypt('password'), 
+            'password' => bcrypt('password'),
         ]);
 
-        $clientUser->assignRole('agent');
-
+        $agentUser->assignRole('agent');
 
     }
 }
