@@ -1,6 +1,33 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { ref } from 'vue';
+
+const history = ref([]);
+
+const ai = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+const safetySettings = [
+    {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+    },
+];
+const generationConfig = { // Ajusta el estilo de respuesta
+    stopSequences: ["red"],
+    maxOutputTokens: 100,
+    temperature: 0.5,
+    topP: 0.1,
+    topK: 16,
+};
+const model = ai.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig,
+    safetySettings,
+});
+
+const chat = model.startChat({
+    history: [],
+});
 
 defineProps({
     canLogin: {
@@ -26,23 +53,41 @@ function handleImageError() {
     document.getElementById('background')?.classList.add('!hidden');
 }
 
-const messages = ref([
-    { sender: 'bot', text: '¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte?' },
-]);
 
 const currentMessage = ref('');
+const loading = ref(false);
 
-function sendMessage() {
+function addMessageToHistory(sender, text) {
+    history.value.push({ role: sender, parts: [{ text: text }] });
+}
+
+const fetchData = async () => { //LLamar a la api
+    loading.value = true;
+    addMessageToHistory("user", currentMessage.value);
+    const result = await chat.sendMessage(currentMessage.value);
+    const response = await result.response;
+
+    const text = response.text();
+    addMessageToHistory(
+        "model",
+        text
+            .replace(/\n/g, "<br />")
+            .replace(/"/g, "")
+            .replace(/\*([^*]+)\*/g, "<h3>$1</h3>")
+    );
+    currentMessage.value = '';
+    loading.value = false;
+};
+
+
+
+async function sendMessage() {
     if (currentMessage.value.trim() === '') return;
 
-    messages.value.push({ sender: 'user', text: currentMessage.value });
+    console.log("sending message...");
+    console.log("message: ", currentMessage.value);
 
-    setTimeout(() => {
-        messages.value.push({
-            sender: 'bot',
-            text: 'Esto es una respuesta automática. Estoy aquí para ayudarte.',
-        });
-    }, 1000);
+    fetchData();
 
     currentMessage.value = '';
 }
@@ -62,12 +107,9 @@ function sendMessage() {
 
                 <!-- Navigation -->
                 <div class="flex space-x-4">
-                    <Link
-                        v-if="$page.props.auth.user"
-                        :href="route('tickets.index')"
-                        class="text-white hover:text-gray-300 transition"
-                    >
-                        Tickets
+                    <Link v-if="$page.props.auth.user" :href="route('tickets.index')"
+                        class="text-white hover:text-gray-300 transition">
+                    Tickets
                     </Link>
                     <template v-else>
                         <Link :href="route('login')"
@@ -85,15 +127,14 @@ function sendMessage() {
                 class="chat-container bg-white dark:bg-gray-100 p-6 rounded-lg shadow-lg w-full max-w-5xl h-[450px] flex flex-col border border-gray-300 dark:border-gray-700">
                 <!-- Chat Messages -->
                 <div class="chat-messages flex-grow overflow-y-auto space-y-4 p-4">
-                    <div v-for="(message, index) in messages" :key="index" :class="{
-                        'text-left': message.sender === 'bot',
-                        'text-right': message.sender === 'user',
+                    <div v-for="(message, index) in history" :key="index" :class="{
+                        'text-left': message.role == 'model',
+                        'text-right': message.role == 'user',
                     }" class="mb-2">
                         <span :class="{
-                            'bg-gray-300 text-black rounded-lg px-4 py-2 inline-block': message.sender === 'bot',
-                            'bg-gray-700 text-white rounded-lg px-4 py-2 inline-block': message.sender === 'user',
-                        }">
-                            {{ message.text }}
+                            'bg-gray-300 text-black rounded-lg px-4 py-2 inline-block': message.role === 'model',
+                            'bg-gray-700 text-white rounded-lg px-4 py-2 inline-block': message.role === 'user',
+                        }" v-html="message.parts[0].text">
                         </span>
                     </div>
                 </div>
