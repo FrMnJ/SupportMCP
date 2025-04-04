@@ -1,0 +1,23 @@
+POST http://localhost:8000/api/login
+Content-Type: application/json
+
+{
+        "email": "admin@mail.com",
+        "password": "password"
+}
+
+### 
+POST http://localhost:8000/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+        "name": "Test Client",
+        "email": "new_client_test@mail.com",
+        "number": "123456789",
+        "extension": "123",
+        "department": "Test Department"
+}
+
+###
+GET http://localhost:8000/api/users
