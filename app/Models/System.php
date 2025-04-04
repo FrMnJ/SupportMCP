@@ -11,4 +11,12 @@ class System extends Model
     public function tickets(){
         return $this->hasMany(Ticket::class);
     }
+
+    public function toDto()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+    }
 }

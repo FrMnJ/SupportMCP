@@ -35,4 +35,21 @@ class Ticket extends Model
     {
         return $this->belongsTo(System::class);
     }
+
+    public function toDto()
+    {
+        return [
+            'id' => $this->id,
+            'issue' => $this->issue,
+            'description' => $this->description,
+            'priority' => $this->priority,
+            'category' => $this->category,
+            'status' => $this->status,
+            'client' => $this->client->toDto(),
+            'system' => $this->system->toDto(),
+            'assigned_at' => $this->assigned_at,
+            'resolution' => $this->resolution,
+            'comments' => $this->comments,
+        ];
+    }
 }
