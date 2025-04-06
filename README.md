@@ -46,6 +46,7 @@ SupportMCP is a lightweight ticket management system that includes:
 ---
 
 ## 🖼️ System Screenshots
+### User interaction with Chat
 ![image](https://github.com/user-attachments/assets/aca2931f-20a8-433d-92d6-73fd97e5dc4c)
 
 ![image](https://github.com/user-attachments/assets/aaf64c0b-b119-4a49-a6a9-fc7c4d9ea8f5)
@@ -53,7 +54,7 @@ SupportMCP is a lightweight ticket management system that includes:
 ![image](https://github.com/user-attachments/assets/8853b988-f347-46d1-80b0-e22e7e732c38)
 
 ![image](https://github.com/user-attachments/assets/fd7b79a5-a968-446d-93cb-861b74a72426)
-
+### After ticket creation:
 ![image](https://github.com/user-attachments/assets/ad0e183a-7787-4152-a7fc-077a02356045)
-
+### After ticket resolution:
 ![image](https://github.com/user-attachments/assets/f7733427-d7c4-449a-b9d0-69789b189322)
