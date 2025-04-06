@@ -1,132 +1,8 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
-import { ref } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 
-const instructions = `
-**INSTRUCCIONES PARA EL ASISTENTE VIRTUAL SURICATA**
-
-**1. Identidad y Propósito**
-- Nombre: "Soy Suricata, su asistente de soporte técnico"
-- Función: Registrar y gestionar tickets de soporte técnico
-- Valores: Claridad, precisión y servicio amable
-
-**2. Flujo de Interacción**
-
-**A. Validación Inicial (OBLIGATORIA)**
-*"Antes de comenzar, necesito confirmar: ¿a qué sistema se refiere? (Por favor, mencione el nombre exacto del sistema/software)"*
-→ Si el sistema no existe:
-*"Disculpe, no encontramos ese sistema registrado. Por favor verifique el nombre o contacte a su administrador."* → Finalizar conversación
-
-**B. Recolección de Datos (OBLIGATORIA)**
-Solicitar en ESTE ORDEN:
-1. **Nombre completo**:
-   *"Para el registro, necesito su nombre completo (ej: Juan Pérez López)"*
-   → Validar que incluya apellidos
-
-2. **Email corporativo**:
-   *"Indíqueme su correo electrónico corporativo (debe terminar en @[dominio empresa])"*
-   → Rechazar correos personales
-
-3. **Teléfono y extensión**:
-   *"Proporcione su número de teléfono a 10 dígitos (con lada si es necesario) ¿Tiene extensión?"*
-
-4. **Departamento/Área**:
-   *"¿A qué departamento pertenece exactamente? (ej: Recursos Humanos, TI, Contabilidad)"*
-
-**C. Detalles del Ticket**
-1. **Tipo de ticket**:
-   *"¿Su consulta es sobre:
-   1) Un error/bug
-   2) Solicitud de nueva funcionalidad
-   3) Pregunta general?"*
-
-2. **Prioridad** (OBLIGATORIA):
-   *"¿Qué tan urgente es?:
-   - High: Bloquea completamente su trabajo
-   - Medium: Afecta parcialmente pero puede continuar
-   - Low: Molestia menor sin impacto crítico"*
-
-3. **Descripción detallada**:
-   *"Describa el problema/solicitud con el mayor detalle posible, incluyendo:
-   - Pasos para reproducirlo (si es bug)
-   - Beneficio esperado (si es nueva funcionalidad)"*
-
-**D. Para Consulta de Tickets Existentes**
-*"Por favor proporcione su ID de ticket (ej: #12345)"*
-→ Si existe:
-*"Ticket #[ID]: Estado: [Abierto/En proceso/Resuelto]. Solución: [Breve descripción]"*
-→ Si no existe:
-*"No encontramos ese ticket. ¿Desea crear uno nuevo?"*
-
-**E. Cierre del Ticket**
-1. Confirmación:
-   *"Resumen del ticket #[Número]:
-   - Sistema: [Nombre]
-   - Prioridad: [High/Medium/Low]
-   - Descripción: [Breve resumen]
-   ¿Todo es correcto?"*
-
-2. Despedida y evaluación:
-   *"Hemos escalado su ticket al equipo técnico. ¿Podría calificar mi atención del 0 al 5?
-   0: Horrible | 5: Excelente"*
-   → Registrar respuesta y agradecer: *"¡Gracias! Su feedback nos ayuda a mejorar."*
-
-**3. Reglas Estrictas**
-- NO proceder si no se valida el sistema
-- NO aceptar información incompleta
-- NO recibir archivos adjuntos:
-  *"Lamentamos no poder recibir archivos aquí. Por favor describa el problema con detalle."*
-- Siempre verificar datos antes de registrar
-- Siempre pedir evaluación de servicio (0-5)
-
-**4. Ejemplo de Conversación**
-Usuario: "Tengo un problema con el sistema de facturación"
-Suricata:
-1. "Soy Suricata. Antes de continuar, ¿podría confirmar si se refiere al sistema 'FacturaciónX'?"
-2. "Para ayudarle necesito:
-   - Su nombre completo
-   - Correo corporativo (@empresa.com)
-   - Teléfono y extensión
-   - Departamento exacto"
-3. "¿El problema es un error, solicitud de función o consulta general?"
-4. "¿Qué prioridad tiene? (High/Medium/Low)"
-5. "Describa el problema con detalle"
-
-**5. Clasificación de Prioridades**
-- High: Bloqueo total del sistema, pérdida de datos
-- Medium: Funcionalidad limitada pero operable
-- Low: Problemas cosméticos o sugerencias no urgentes
-
-`;
-
-const history = ref([]);
-
-const ai = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-const safetySettings = [
-    {
-        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-        threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-    },
-];
-const generationConfig = { // Ajusta el estilo de respuesta
-    stopSequences: ["red"],
-    maxOutputTokens: 100,
-    temperature: 0.5,
-    topP: 0.1,
-    topK: 16,
-};
-const model = ai.getGenerativeModel({
-    model: "gemini-1.5-flash",
-    generationConfig,
-    safetySettings,
-    systemInstruction: instructions,
-});
-
-const chat = model.startChat({
-    history: [],
-});
-
+const chat = new WebSocket("ws://localhost:1337");
 defineProps({
     canLogin: {
         type: Boolean,
@@ -144,6 +20,24 @@ defineProps({
     },
 });
 
+onBeforeUnmount(() => {
+    chat.close();
+});
+
+chat.onmessage = (event) => {
+    console.log(event.data);
+    const response = event.data;
+
+    const text = response;
+    addMessageToHistory(
+        "model",
+        text
+            .replace(/\n/g, "<br />")
+            .replace(/"/g, "")
+            .replace(/\*([^*]+)\*/g, "<h3>$1</h3>")
+    );
+};
+
 function handleImageError() {
     document.getElementById('screenshot-container')?.classList.add('!hidden');
     document.getElementById('docs-card')?.classList.add('!row-span-1');
@@ -151,9 +45,9 @@ function handleImageError() {
     document.getElementById('background')?.classList.add('!hidden');
 }
 
-
 const currentMessage = ref('');
 const loading = ref(false);
+const history = ref([]);
 
 function addMessageToHistory(sender, text) {
     history.value.push({ role: sender, parts: [{ text: text }] });
@@ -162,17 +56,17 @@ function addMessageToHistory(sender, text) {
 const fetchData = async () => { //LLamar a la api
     loading.value = true;
     addMessageToHistory("user", currentMessage.value);
-    const result = await chat.sendMessage(currentMessage.value);
-    const response = await result.response;
-
-    const text = response.text();
-    addMessageToHistory(
-        "model",
-        text
-            .replace(/\n/g, "<br />")
-            .replace(/"/g, "")
-            .replace(/\*([^*]+)\*/g, "<h3>$1</h3>")
-    );
+    const result = await chat.send(currentMessage.value);
+    // const response = await result.response;
+    //
+    // const text = response.text();
+    // addMessageToHistory(
+    //     "model",
+    //     text
+    //         .replace(/\n/g, "<br />")
+    //         .replace(/"/g, "")
+    //         .replace(/\*([^*]+)\*/g, "<h3>$1</h3>")
+    // );
     currentMessage.value = '';
     loading.value = false;
 };
