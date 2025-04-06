@@ -53,7 +53,7 @@ class TicketController extends Controller
             $ticketData['assigned_at'] = Carbon::now();
         }
 
-        Ticket::create($request->all());
+        Ticket::create($ticketData);
 
         return redirect()->route('tickets.index')->with('success', 'Ticket creado correctamente.');
     }
@@ -73,9 +73,25 @@ class TicketController extends Controller
         $request->validate([
             'status' => 'required|in:open,in_progress,resolved,closed,pending',
             'priority' => 'required|in:low,medium,high',
+            'resolution' => 'nullable|string',
         ]);
 
-        $ticket->update($request->all());
+        $ticketData = $request->all();
+
+        if($request->status == 'resolved') {
+            $ticketData['resolved_at'] = Carbon::now();
+        }
+        else{
+            $ticketData['resolved_at'] = null;
+        }
+
+        if($request->filled('assigned_to')) {
+            $ticketData['assigned_at'] = Carbon::now();
+        }else{
+            $ticketData['assigned_at'] = null;
+        }
+
+        $ticket->update($ticketData);
 
         return redirect()->route('tickets.index')->with('success', 'Ticket actualizado correctamente.');
     }

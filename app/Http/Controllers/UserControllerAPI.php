@@ -42,6 +42,7 @@ class UserControllerAPI extends Controller
             'department' => $request->department,
         ]);
 
+        $user->assignRole('client');
         return response()->json(['user' => $user->toDto()], 200);
     }
 

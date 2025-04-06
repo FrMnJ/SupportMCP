@@ -18,7 +18,8 @@ class Ticket extends Model
         'assigned_at',
         'resolution',
         'comments',
-        'score'
+        'score',
+        'resolved_at'
     ];
 
     public function client()
