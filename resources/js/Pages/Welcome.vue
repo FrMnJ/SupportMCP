@@ -1,8 +1,10 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, onBeforeUnmount } from 'vue';
+import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
 
 const chat = new WebSocket("ws://localhost:1337");
+const chatMessages = ref(null);
+
 defineProps({
     canLogin: {
         type: Boolean,
@@ -48,6 +50,18 @@ function handleImageError() {
 const currentMessage = ref('');
 const loading = ref(false);
 const history = ref([]);
+
+const scrollToBottom = () => {
+    if (chatMessages.value) {
+        chatMessages.value.scrollTop = chatMessages.value.scrollHeight;
+    }
+};
+onMounted(() => {
+    scrollToBottom();
+});
+watch(history, () => {
+    scrollToBottom();
+});
 
 function addMessageToHistory(sender, text) {
     history.value.push({ role: sender, parts: [{ text: text }] });
@@ -100,7 +114,7 @@ async function sendMessage() {
                 <!-- Navigation -->
                 <div class="flex space-x-4">
                     <Link v-if="$page.props.auth.user" :href="route('tickets.index')"
-                        class="text-white hover:text-gray-300 transition">
+                        class="text-black hover:text-gray-600 transition">
                     Tickets
                     </Link>
                     <template v-else>
@@ -118,7 +132,7 @@ async function sendMessage() {
             <div
                 class="chat-container bg-white dark:bg-gray-100 p-6 rounded-lg shadow-lg w-full max-w-5xl h-[450px] flex flex-col border border-gray-300 dark:border-gray-700">
                 <!-- Chat Messages -->
-                <div class="chat-messages flex-grow overflow-y-auto space-y-4 p-4">
+                <div ref="chatMessages" class="chat-messages flex-grow overflow-y-auto space-y-4 p-4">
                     <div v-for="(message, index) in history" :key="index" :class="{
                         'text-left': message.role == 'model',
                         'text-right': message.role == 'user',

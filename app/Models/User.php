@@ -11,7 +11,11 @@ use \Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<\Database\Factories\UserFactory> 
+    * @method bool hasRole(string $role)
+    * @method bool hasAnyRole(...$roles)
+    * @method \Illuminate\Database\Eloquent\Builder role(string|array $roles)
+    */
     use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     /**

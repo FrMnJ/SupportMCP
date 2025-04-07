@@ -66,6 +66,8 @@ class UserSeeder extends Seeder
         ]);
 
         $agentUser->assignRole('agent');
+        $token = $agentUser->createToken('Agent Token')->plainTextToken;
+        echo "Agent Token: $token\n";
 
     }
 }
